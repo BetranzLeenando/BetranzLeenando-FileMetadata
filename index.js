@@ -12,26 +12,22 @@ app.get("/", function (req, res) {
   res.sendFile(process.cwd() + "/views/index.html");
 });
 
-// Konfigurasi penyimpanan Multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/"); // Pastikan folder "uploads" ada di root proyek
+    cb(null, "uploads/");
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname); // Nama file dengan timestamp
+    cb(null, Date.now() + "-" + file.originalname);
   },
 });
 
-// Middleware upload file
 const upload = multer({ storage: storage });
 
-// Endpoint untuk analisis file
 app.post("/api/fileanalyse", upload.single("upfile"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded" });
   }
 
-  // Kirim metadata file sebagai respons
   res.json({
     name: req.file.originalname,
     type: req.file.mimetype,
@@ -39,7 +35,6 @@ app.post("/api/fileanalyse", upload.single("upfile"), (req, res) => {
   });
 });
 
-// Jalankan server
 const port = process.env.PORT || 3000;
 app.listen(port, function () {
   console.log("Your app is listening on port " + port);
